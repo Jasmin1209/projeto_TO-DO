@@ -1,9 +1,12 @@
+import models.Task;
 import service.Taskservice;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -24,6 +27,7 @@ public class Main {
             System.out.println("3- Completar Tarefas");
             System.out.println("4- Remover Tarefas");
             System.out.println("5- Alterar descrição das Tarefas");
+            System.out.println("6- Filtrar tarefas por data");
             System.out.println("0- Sair");
             System.out.println("Escolha uma das opções: ");
             try {
@@ -44,7 +48,7 @@ public class Main {
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
                         LocalDateTime dateTimeSTART = LocalDateTime.parse(data + " " + horaInicio, formatter);
 
-                        taskservice.adicionarTarefas(descricion, dateTimeSTART, LocalTime.parse(horaTermino));
+                        taskservice.adicionarTarefas(descricion, dateTimeSTART, horaTermino);
                         break;
                     case 2:
                         taskservice.listarTarefas();
@@ -66,6 +70,21 @@ public class Main {
                         System.out.println("Informe a nova descrição: ");
                         String newDescricion = sc.nextLine();
                         taskservice.alterarTarefa(idToAlterDescricion, newDescricion);
+                        break;
+                    case 6:
+                        DateTimeFormatter formatterToFilter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+                        System.out.println("Informe a data: ");
+                        String dataParaFiltro = sc.nextLine();
+
+                        LocalDate dataParaFiltrar = LocalDate.parse(dataParaFiltro, formatterToFilter);
+                        List<Task> results = taskservice.filtrarPorData(dataParaFiltrar);
+
+                        if(results.isEmpty()){
+                            System.out.println("Data sem tarefas adicionadas");
+                        }else{
+                            results.forEach(System.out::println);
+                        }
                         break;
                     case 0:
                         System.out.println("Saindo do sistema....");
