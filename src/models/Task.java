@@ -1,54 +1,65 @@
 package models;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class Task {
-    private int id_task;
-    private String descricion;
-    private boolean completed;
-    private LocalDateTime dateTimeSTART;
-    private String timeEND;
+    private int identifica_a_tarefa;
+    private String descricao_da_tarefa;
+    private boolean completou;
+    private LocalDate data_de_inicio;
+    private LocalTime hora_de_inicio;
+    private LocalTime hora_de_termino;
 
-    public  Task (int id_task, String descricion, LocalDateTime dateTimeSTART, String timeEND){
-        this.id_task = id_task;
-        this.descricion = descricion;
-        this.completed = false;
-        this.dateTimeSTART = dateTimeSTART;
-        this.timeEND = timeEND;
+    public  Task (int identifica_a_tarefa, String descricao_da_tarefa, LocalDate data_de_inicio, LocalTime hora_de_inicio, LocalTime hora_de_termino){
+        this.identifica_a_tarefa = identifica_a_tarefa;
+        this.descricao_da_tarefa = descricao_da_tarefa;
+        this.completou = false;
+        this.data_de_inicio = data_de_inicio;
+        this.hora_de_inicio = hora_de_inicio;
+        this.hora_de_termino = hora_de_termino;
     }
 
-    public int getId() {
-        return id_task;
+    public int getId() {return identifica_a_tarefa;
     }
 
     public String getDescricion() {
-        return descricion;
+        return descricao_da_tarefa;
     }
-    public void setDescricion(String descricion) {
-        this.descricion = descricion;
-    }
-
-    public LocalDateTime getDateTimeSTART() {
-        return dateTimeSTART;
-    }
-    public void setTimeSTART(LocalDateTime dateTimeSTART) {
-        this.dateTimeSTART = dateTimeSTART;
+    public void setDescricion(String descricao_da_tarefa) {
+        this.descricao_da_tarefa = descricao_da_tarefa;
     }
 
-    public String getTimeEND(){ return timeEND;}
-    public void setDateTimeEND(String timeEND){this.timeEND = timeEND;}
+    public LocalDate getDateSTART() {
+        return data_de_inicio;
+    }
+    public void setDateSTART(LocalDate data_de_inicio) {
+        this.data_de_inicio = data_de_inicio;
+    }
+
+    public LocalTime getTimeSTART() {return hora_de_inicio;}
+    public void setTimeSTART(LocalTime hora_de_inicio) {this.hora_de_inicio = hora_de_inicio;}
+
+    public LocalTime getTimeEND(){ return hora_de_termino;}
+    public void setDateTimeEND(LocalTime hora_de_termino){this.hora_de_termino = hora_de_termino;}
 
     public boolean getIsCompleted() {
-        return completed;
+        return completou;
     }
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
+    public void setCompleted(boolean completou) {
+        this.completou = completou;
     }
 
     @Override
     public String toString() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        return (completed ? "[X]" : "[ ]") + id_task + " -" + descricion + "(Agendado: " + dateTimeSTART.format(formatter) + " - " +timeEND+ ")";
+        DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
+        return (completou ? "[X]" : "[ ]") +
+                identifica_a_tarefa + " -" +
+                descricao_da_tarefa + "(Agendado: " +
+                data_de_inicio.format(formatterDate) + " | " +
+                hora_de_inicio.format(formatterHour) + " - " +
+                hora_de_termino.format(formatterHour) + ")";
     }
 }

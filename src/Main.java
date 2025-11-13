@@ -1,13 +1,12 @@
 import models.Task;
 import service.Taskservice;
 
+
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -15,6 +14,9 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         Taskservice taskservice = new Taskservice();
+
+        DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("dd/MM/yyyy"); //usado para criar esse formato de data
+        DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
 
         int options = -1;
         String descricion;
@@ -45,10 +47,12 @@ public class Main {
                         System.out.println("Hora TÉRMINO (HH:mm): ");
                         String horaTermino = sc.nextLine();
 
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-                        LocalDateTime dateTimeSTART = LocalDateTime.parse(data + " " + horaInicio, formatter);
 
-                        taskservice.adicionarTarefas(descricion, dateTimeSTART, horaTermino);
+                        LocalDate dateSTART = LocalDate.parse(data, formatterDate); //faz a conversão da tring data inserida para ficar no tipo de Date com o formato
+                        LocalTime timeSTART = java.time.LocalTime.parse(horaInicio, formatterHour);
+                        LocalTime timeEND = java.time.LocalTime.parse(horaTermino, formatterHour);
+
+                        taskservice.adicionarTarefas(descricion, dateSTART, timeSTART, timeEND);
                         break;
                     case 2:
                         taskservice.listarTarefas();
@@ -72,14 +76,12 @@ public class Main {
                         taskservice.alterarTarefa(idToAlterDescricion, newDescricion);
                         break;
                     case 6:
-                        DateTimeFormatter formatterToFilter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
                         System.out.println("Informe a data: ");
                         String dataParaFiltro = sc.nextLine();
 
-                        LocalDate dataParaFiltrar = LocalDate.parse(dataParaFiltro, formatterToFilter);
+                        LocalDate dataParaFiltrar = LocalDate.parse(dataParaFiltro, formatterDate);
                         List<Task> results = taskservice.filtrarPorData(dataParaFiltrar);
-
+                        
                         if(results.isEmpty()){
                             System.out.println("Data sem tarefas adicionadas");
                         }else{
