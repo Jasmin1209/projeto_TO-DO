@@ -1,4 +1,6 @@
+import models.Category;
 import models.Task;
+import service.CategoryService;
 import service.Taskservice;
 
 
@@ -14,6 +16,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         Taskservice taskservice = new Taskservice();
+        CategoryService categoryService = new CategoryService();
 
         DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("dd/MM/yyyy"); //usado para criar esse formato de data
         DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
@@ -30,6 +33,8 @@ public class Main {
             System.out.println("4- Remover Tarefas");
             System.out.println("5- Alterar descrição das Tarefas");
             System.out.println("6- Filtrar tarefas por data");
+            System.out.println("7- Adicionar Categorias");
+            System.out.println("8- Listar Categorias");
             System.out.println("0- Sair");
             System.out.println("Escolha uma das opções: ");
             try {
@@ -46,13 +51,20 @@ public class Main {
                         String horaInicio = sc.nextLine();
                         System.out.println("Hora TÉRMINO (HH:mm): ");
                         String horaTermino = sc.nextLine();
-
-
+                        System.out.println("CATEGORIA");
+                        categoryService.listarCategoria();
+                        System.out.println("Informe o código da categoria: ");
+                        int categoryCode = sc.nextInt();
+                        Category encontrar_categoria = categoryService.encontrar_categorias(categoryCode);
+                        if(encontrar_categoria == null){
+                            System.out.println("Categoria Inválida");
+                            break;
+                        }
                         LocalDate dateSTART = LocalDate.parse(data, formatterDate); //faz a conversão da tring data inserida para ficar no tipo de Date com o formato
                         LocalTime timeSTART = java.time.LocalTime.parse(horaInicio, formatterHour);
                         LocalTime timeEND = java.time.LocalTime.parse(horaTermino, formatterHour);
 
-                        taskservice.adicionarTarefas(descricion, dateSTART, timeSTART, timeEND);
+                        taskservice.adicionarTarefas(descricion, dateSTART, timeSTART, timeEND, encontrar_categoria);
                         break;
                     case 2:
                         taskservice.listarTarefas();
@@ -81,13 +93,20 @@ public class Main {
 
                         LocalDate dataParaFiltrar = LocalDate.parse(dataParaFiltro, formatterDate);
                         List<Task> results = taskservice.filtrarPorData(dataParaFiltrar);
-                        
+
                         if(results.isEmpty()){
                             System.out.println("Data sem tarefas adicionadas");
                         }else{
                             results.forEach(System.out::println);
                         }
                         break;
+                    case 7:
+                        System.out.println("Descrição da categoria: ");
+                        String nome_categoria = sc.nextLine();
+                        categoryService.adicionarNovaCategoria(nome_categoria);
+                        break;
+                    case 8:
+                        categoryService.listarCategoria();
                     case 0:
                         System.out.println("Saindo do sistema....");
                         break;

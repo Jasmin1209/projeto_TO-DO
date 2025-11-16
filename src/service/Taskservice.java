@@ -1,5 +1,6 @@
 package service;
 
+import models.Category;
 import models.Task;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,7 +20,7 @@ public class Taskservice {
         this.identifica_a_tarefa_service = 1;
     }
 
-    public void adicionarTarefas(String descricao, LocalDate dataInicio, LocalTime hora_inicio, LocalTime horaFinal){
+    public void adicionarTarefas(String descricao, LocalDate dataInicio, LocalTime hora_inicio, LocalTime horaFinal, Category category){
 
         if(dataInicio.isBefore(LocalDate.now())){ //verifica se a data de inicio inserida não é anterior a data de hoje
             System.out.println("Não é possível adicionar tarefas com datas passadas ");
@@ -43,7 +44,7 @@ public class Taskservice {
                 }
             }
 
-            Task task = new Task(identifica_a_tarefa_service++, descricao, dataInicio, hora_inicio, horaFinal);
+            Task task = new Task(identifica_a_tarefa_service++, descricao, dataInicio, hora_inicio, horaFinal, category);
             lista_das_tarefas.add(task);
             System.out.println("Tarefa Adicionada com sucesso!!");
 
