@@ -3,93 +3,102 @@ package service;
 import models.Category;
 import models.Task;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class Taskservice {
-    private List<Task> lista_das_tarefas;
-    private int identifica_a_tarefa_service;
+    private List<Task> taskList;
+    private Long taskId;
 
     public Taskservice (){
-        this.lista_das_tarefas = new ArrayList<>();
-        this.identifica_a_tarefa_service = 1;
+        this.taskList = new ArrayList<>();
+        this.taskId = 1L;
     }
 
-    public void adicionarTarefas(String descricao, LocalDate dataInicio, LocalTime hora_inicio, LocalTime horaFinal, Category category){
+    public void adicionarTarefas(String description,
+                                 LocalDate startDate,
+                                 LocalTime startHour,
+                                 LocalTime endHour,
+                                 Category category){
 
-        if(dataInicio.isBefore(LocalDate.now())){ //verifica se a data de inicio inserida não é anterior a data de hoje
-            System.out.println("Não é possível adicionar tarefas com datas passadas ");
-            return;
+        if(startDate.isBefore(LocalDate.now())){ //verifica se a data de inicio inserida não é anterior a data de hoje
+            throw new IllegalArgumentException("Não é possível adicionar tarefas com datas passadas");
         }
 
-            for (Task t : lista_das_tarefas) {
-                if (t.getDateSTART().equals(dataInicio)) { // só acontece se as datas forem iguais
+            for (Task t : taskList) {
+                if (t.getDateStart().equals(startDate)) { // só acontece se as datas forem iguais
                     /*
                      - Se a nova tarefa não terminar antes da antiga iniciar
                      - Se a nova tarefa nao iniciar depois da antiga terminar
                      = vai ter conflito de horário, pois uma vai acabar sobrescrevendo
                      o horário da outra.
                      */
-                    boolean conflito = !(horaFinal.isBefore(t.getTimeSTART()) || hora_inicio.isAfter(t.getTimeEND()));
+                    boolean conflito = !(endHour.isBefore(t.getHourStart()) || startHour.isAfter(t.getHourEnd()));
 
                     if (conflito) { // se a verificação for verdadeira então não será possível adicionar novas tarefas
-                        System.out.println("❌ Conflito de horário com a tarefa: " + t.getDescricion());
-                        return;
+                        throw new IllegalStateException("❌ Conflito de horário com a tarefa: " + t.getDescription());
+
                     }
                 }
             }
 
-            Task task = new Task(identifica_a_tarefa_service++, descricao, dataInicio, hora_inicio, horaFinal, category);
-            lista_das_tarefas.add(task);
+            Task task = new Task();
+            task.setId(taskId++);
+            task.setDescription(description);
+            task.setDateStart(startDate);
+            task.setHourStart(startHour);
+            task.setHourEnd(endHour);
+            task.setCompleted(false);
+            task.setCategory(category);
+            taskList.add(task);
             System.out.println("Tarefa Adicionada com sucesso!!");
 
     }
 
     public void listarTarefas(){
-        if(lista_das_tarefas.isEmpty()){
+        if(taskList.isEmpty()){
             System.out.println("A lista está vazia, adicione um item");
             return;
         }
 
-        for(Task task : lista_das_tarefas){
+        for(Task task : taskList){
             System.out.println(task);
         }
     }
 
-    public void completarTarefas(int id){
+    public void completarTarefas(Long id){
         Task toCompleted = validarID(id);
         toCompleted.setCompleted(true);
         System.out.println("Tarefa concluída");
     }
 
-    public void removerTarefa(int id){
+    public void removerTarefa(Long id){
         Task Toremoved = validarID(id);
-        lista_das_tarefas.remove(Toremoved);
+        taskList.remove(Toremoved);
         System.out.println("Tarefa excluída");
 
     }
 
-    public void alterarTarefa(int id, String alterDescricion){
+    public void alterarTarefa(Long id, String alterDescricion){
         Task updateDescricion = validarID(id);
-        updateDescricion.setDescricion(alterDescricion);
+        updateDescricion.setDescription(alterDescricion);
         System.out.println("Descrição da tarefa alterada");
     }
 
-    private Task validarID(int id){
-        return lista_das_tarefas.stream() //percorre a lista
-                .filter(t -> t.getId() == id) //filtra apenas os elementos que possuem o 'ID' igual o passado no parâmetro
+    private Task validarID(Long id){
+        return taskList.stream() //percorre a lista
+                .filter(t -> t.getId().equals(id)) //filtra apenas os elementos que possuem o 'ID' igual o passado no parâmetro
                 .findFirst() //acha o primeiro encontrado
-                .orElseThrow(() -> new NoSuchElementException("ID não encontrado")); //se não encontrar nenhum, estoura a exceção
+                .orElseThrow(() ->
+                        new NoSuchElementException("ID não encontrado")); //se não encontrar nenhum, estoura a exceção
     }
 
     public List<Task> filtrarPorData (LocalDate dataParaFiltrar) {
-        return lista_das_tarefas.stream()
-                .filter(t -> t.getDateSTART().equals(dataParaFiltrar))
+        return taskList.stream()
+                .filter(t -> t.getDateStart().equals(dataParaFiltrar))
                 .collect(Collectors.toList());
     }
 }

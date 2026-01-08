@@ -1,3 +1,5 @@
+package main;
+
 import models.Category;
 import models.Task;
 import service.CategoryService;
@@ -54,7 +56,7 @@ public class Main {
                         System.out.println("CATEGORIA");
                         categoryService.listarCategoria();
                         System.out.println("Informe o código da categoria: ");
-                        int categoryCode = sc.nextInt();
+                        Long categoryCode = sc.nextLong();
                         Category encontrar_categoria = categoryService.encontrar_categorias(categoryCode);
                         if(encontrar_categoria == null){
                             System.out.println("Categoria Inválida");
@@ -71,17 +73,17 @@ public class Main {
                         break;
                     case 3:
                         System.out.println("Informe o id da tarefa para completar: ");
-                        int idToCompletecTask = sc.nextInt();
+                        Long idToCompletecTask = sc.nextLong();
                         taskservice.completarTarefas(idToCompletecTask);
                         break;
                     case 4:
                         System.out.println("Informe o id da tarefa para ser removida: ");
-                        int idToRemoveTask = sc.nextInt();
+                        Long idToRemoveTask = sc.nextLong();
                         taskservice.removerTarefa(idToRemoveTask);
                         break;
                     case 5:
                         System.out.println("Informe o id da tarefa para ser alterada: ");
-                        int idToAlterDescricion = sc.nextInt();
+                        Long idToAlterDescricion = sc.nextLong();
                         sc.nextLine();
                         System.out.println("Informe a nova descrição: ");
                         String newDescricion = sc.nextLine();

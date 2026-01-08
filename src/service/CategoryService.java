@@ -4,30 +4,42 @@ import models.Category;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class CategoryService {
-    private List<Category> lista_de_categorias = new ArrayList<>();
-    private int id_categoryService = 1;
+    private List<Category> categoryList = new ArrayList<>();
+    private Long categoryId = 1L;
 
     public void adicionarNovaCategoria(String nome_categoria){
-        Category categoryservice = new Category(id_categoryService++, nome_categoria);
-        lista_de_categorias.add(categoryservice);
+
+        boolean exists = categoryList.stream()
+                .anyMatch(c -> c.getDescricionCategory()
+                        .equalsIgnoreCase(nome_categoria));
+
+        if(exists){
+            throw new IllegalArgumentException("Categoria já existe");
+        }
+        Category categoryservice = new Category();
+        categoryservice.setId(categoryId++);
+        categoryservice.setDescricionCategory(nome_categoria);
+        categoryList.add(categoryservice);
         System.out.println("Categoria Inserida com sucesso");
     }
 
     public List<Category> listarCategoria(){
-        if(lista_de_categorias.isEmpty()){
-            System.out.println("Lista de Categorias Vazia");
+        if(categoryList.isEmpty()){
+            throw new IllegalStateException("Lista de Categorias Vazia");
         }else{
-            lista_de_categorias.forEach(System.out::println);
+            categoryList.forEach(System.out::println);
         }
-        return lista_de_categorias;
+        return categoryList;
     }
 
-    public Category encontrar_categorias(int id_categoria){
-        return lista_de_categorias.stream()
-                .filter(c -> c.getId_categoria() == id_categoria)
+    public Category encontrar_categorias(Long id_categoria){
+        return categoryList.stream()
+                .filter(c -> c.getId().equals(id_categoria))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() ->
+                        new NoSuchElementException("Categoria não encontrado"));
     }
 }

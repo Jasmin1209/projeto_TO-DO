@@ -1,22 +1,26 @@
 package models;
+import br.com.infrastructure.entity.PersistenceEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.*;
 
-public class Category {
-    private int id_categoria;
-    private String nome_categoria;
+import java.io.Serializable;
 
-    public Category(int id_categoria, String nome_categoria) {
-        this.id_categoria = id_categoria;
-        this.nome_categoria = nome_categoria;
-    }
+@Entity
+@Table(name = "categoria")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Category extends PersistenceEntity implements Serializable {
 
-    public int getId_categoria() { return id_categoria;}
-    public void setId_categoria(int id_categoria) {this.id_categoria = id_categoria;}
+    @Column(name = "descripton")
+    private String descricionCategory;
 
-    public String getNome_categoria() {return nome_categoria;}
-    public void setNome_categoria(String nome_categoria) {this.nome_categoria = nome_categoria;}
 
     @Override
     public String toString() {
-        return id_categoria + " - " + nome_categoria + '\'' ;
+        return id + " - " + descricionCategory + '\'' ;
     }
 }
