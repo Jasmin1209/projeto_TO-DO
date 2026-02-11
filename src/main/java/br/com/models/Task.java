@@ -1,4 +1,4 @@
-package models;
+package br.com.models;
 
 import br.com.infrastructure.entity.PersistenceEntity;
 import jakarta.persistence.*;
@@ -7,16 +7,12 @@ import lombok.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table (name = "tarefas")
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter @Setter
+@AllArgsConstructor @NoArgsConstructor
 public class Task extends PersistenceEntity implements Serializable {
-
 
     @Column(nullable = false)
     private String description;
@@ -37,16 +33,4 @@ public class Task extends PersistenceEntity implements Serializable {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @Override
-    public String toString() {
-        DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
-        return (completed ? "[X]" : "[ ]") +
-                id + " -" +
-                description + "(Agendado: " +
-                dateStart.format(formatterDate) + " | " +
-                hourStart.format(formatterHour) + " - " +
-                hourEnd.format(formatterHour) + ") " +
-                "CATEGORIA: " + category.getDescricionCategory();
-    }
 }
